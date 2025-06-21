@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": ".",
+            "name": "drone-simulation"
+        }
+    ],
+    "settings": {
+        "[python]": {
+            "editor.defaultFormatter": "ms-python.black-formatter"
+        },
+        "editor.formatOnSave": true,
+    },
+}
