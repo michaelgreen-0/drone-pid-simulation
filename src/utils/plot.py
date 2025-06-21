@@ -5,7 +5,7 @@ def plot_simulation_data(
     time_points, positions, forces, p_comps, i_comps, d_comps, desired_pos
 ):
     # Plot setup
-    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
+    fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(10, 4), sharex=True)
     plt.style.use("seaborn-v0_8-whitegrid")
 
     # Position vs time
@@ -28,4 +28,4 @@ def plot_simulation_data(
     ax2.legend()
 
     plt.tight_layout()
-    plt.show()
+    return fig
