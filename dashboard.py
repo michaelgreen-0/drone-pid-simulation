@@ -1,6 +1,5 @@
 import streamlit as st
 import numpy as np
-import os
 from src.logger import Logger
 from src.services import Simulator, Plotter
 from src.env import (
