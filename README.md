@@ -28,7 +28,7 @@ Dependencies are managed with Pipenv. Therefore cloning and downloading the pack
 1.  **Clone the repository:**
     ```bash
     git clone https://github.com/michaelgreen-0/drone-pid-simulation.git
-    cd drone-simulation
+    cd drone-pid-simulation
     ```
 
 2.  **Install the packages and start pipenv shell:**
