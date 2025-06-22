@@ -5,7 +5,7 @@ from src.utils.plot import plot_simulation_data
 from src.env import (
     TIME_STEP,
     TOTAL_SIM_TIME,
-    DESIRED_Y_POSITION,
+    DESIRED_POSITION,
     DRONE_MASS,
     INITIAL_POSITION,
     KP,
@@ -18,34 +18,59 @@ def run_simulation(kp, ki, kd):
     """Runs the drone simulation with the given PID constants."""
     time_points = np.arange(0, TOTAL_SIM_TIME, TIME_STEP)
 
-    drone = Drone(mass=DRONE_MASS, initial_position=INITIAL_POSITION)
-    pid_y = PID(Kp=kp, Ki=ki, Kd=kd, desired_position=DESIRED_Y_POSITION)
+    initial_pos = np.array(INITIAL_POSITION)
+    desired_pos = np.array(DESIRED_POSITION)
 
-    drone_path_y = []
-    forces_y = []
+    if initial_pos.shape != desired_pos.shape:
+        raise ValueError("Initial and desired positions must have the same shape.")
+
+    drone = Drone(mass=DRONE_MASS, initial_position=initial_pos)
+
+    num_dimensions = len(initial_pos)
+    pid_controllers = [
+        PID(Kp=kp, Ki=ki, Kd=kd, desired_position=desired_pos[i])
+        for i in range(num_dimensions)
+    ]
+
+    drone_path = []
+    forces = []
     p_components = []
     i_components = []
     d_components = []
 
     # Run simulation
     for _ in time_points:
-        force_y = pid_y.compute_force(drone.position, TIME_STEP)
-        drone.apply_force(force_y, TIME_STEP)
+        force_vector = np.zeros(num_dimensions)
+        p_vec, i_vec, d_vec = (
+            np.zeros(num_dimensions),
+            np.zeros(num_dimensions),
+            np.zeros(num_dimensions),
+        )
 
-        drone_path_y.append(drone.position)
-        forces_y.append(force_y)
-        p_components.append(pid_y.pid_P)
-        i_components.append(pid_y.pid_I)
-        d_components.append(pid_y.pid_D)
+        for i in range(num_dimensions):
+            force_vector[i] = pid_controllers[i].compute_force(
+                drone.position[i], TIME_STEP
+            )
+            p_vec[i] = pid_controllers[i].pid_P
+            i_vec[i] = pid_controllers[i].pid_I
+            d_vec[i] = pid_controllers[i].pid_D
+
+        drone.apply_force(force_vector, TIME_STEP)
+
+        drone_path.append(drone.position.copy())
+        forces.append(force_vector)
+        p_components.append(p_vec)
+        i_components.append(i_vec)
+        d_components.append(d_vec)
 
     fig = plot_simulation_data(
         time_points,
-        drone_path_y,
-        forces_y,
+        drone_path,
+        forces,
         p_components,
         i_components,
         d_components,
-        DESIRED_Y_POSITION,
+        desired_pos,
     )
     return fig
 
