@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/b60290c2-2efd-4693-82c9-de2b34a36c50" />
+  <img src="https://github.com/user-attachments/assets/bf0757d4-8981-447b-82ca-775d5a28f6a5" />
 </p>
 
 # Drone PID Simulator
