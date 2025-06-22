@@ -7,7 +7,7 @@
 A simulator to visualize the movement of a drone controlled by PID controllers. Users can tune the controller gains and drone properties in real-time and observe the impact on its flight path and stability.
 
 ## How it Works
-The simulation calculates the necessary forces to guide a drone from a starting point to a desired position. For each dimension (X, Y, Z), a separate PID controller computes a force based on the drone's current position and velocity. These forces are then applied to the drone model, and the simulation iteratively updates its position over time.
+The simulation calculates the necessary forces to guide a drone from a starting point to a desired position. For each dimension, a separate PID controller computes a force based on the drone's current position and velocity. These forces are then applied to the drone model, and the simulation iteratively updates its position over time.
 
 To make things interesting, an external force can also be applied. We can then see how the drone and it's PID controllers behave.
 
