@@ -1,0 +1,4 @@
+*.gif
+*.png
+env.py
+__pycache__

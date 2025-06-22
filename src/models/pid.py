@@ -1,6 +1,3 @@
-import numpy as np
-
-
 class PID:
     def __init__(self, Kp: float, Ki: float, Kd: float, desired_position: float):
         self.Kp = Kp
