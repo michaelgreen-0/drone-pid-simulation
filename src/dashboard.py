@@ -1,8 +1,8 @@
 import streamlit as st
 import numpy as np
-from src.logger import Logger
-from src.services import Simulator, Plotter, Validator
-from src.env import (
+from logger import Logger
+from services import Simulator, Plotter, Validator
+from env import (
     TIME_STEP,
     TOTAL_SIM_TIME,
     DESIRED_POSITION,

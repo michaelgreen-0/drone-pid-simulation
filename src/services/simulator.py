@@ -1,6 +1,6 @@
 import numpy as np
-from ..models import Drone, PID
-from ..logger import Logger
+from models import Drone, PID
+from logger import Logger
 
 
 class Simulator:
