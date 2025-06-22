@@ -37,7 +37,23 @@ Dependencies are managed with Pipenv. Therefore cloning and downloading the pack
     pipenv shell
     ```
 
-3. **Update environment variables**: Update your desired default values in the src/env.py file.
+3. **Update environment variables**: Update your desired variables in the src/env.py file. This covers properties relating to the drone, PID controllers, initial and desired positions, external forces, and the simulation itself.
+
+The below example variables are for a 3D simulation. But this can be any number of dimensions starting from 2D.
+
+
+| Environment Variable                | Example | Description                                                                                             |
+| :---------------------- | :---------------- | :------------------------------------------------------------------------------------------------------ |
+| `TIME_STEP`             | `0.01`            | The time increment for each step of the simulation (in seconds).                                        |
+| `TOTAL_SIM_TIME`        | `10`            | The total duration of the simulation (in seconds).                                                      |
+| `DRONE_MASS`            | `1.0`             | The mass of the drone (in kilograms). Affects how forces translate to acceleration.                     |
+| `DESIRED_POSITION`      | `[0.0, 0.0, 0.0]` | The target position the drone aims to reach.                  |
+| `INITIAL_POSITION`      | `[10.0, 10.0, 10.0]` | The starting position of the drone.                           |
+| `EXTERNAL_FORCE_VECTOR` | `[0.0, 0.0, 0.0]` | A constant external force applied to the drone throughout the simulation.          |
+| `KP`                    | `1.0`             | Proportional gain for the PID controller. Controls response to current error.                           |
+| `KI`                    | `0.1`             | Integral gain for the PID controller. Addresses accumulated error over time.                            |
+| `KD`                    | `0.5`             | Derivative gain for the PID controller. Dampens oscillations based on rate of error change.             |
+
 
 Launch the Streamlit application by running:
 ```bash
