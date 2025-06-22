@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/b60290c2-2efd-4693-82c9-de2b34a36c50" />
+</p>
+
 # Drone PID Simulator
 
 A simulator to visualize the movement of a drone controlled by PID controllers. Users can tune the controller gains and drone properties in real-time and observe the impact on its flight path and stability.
