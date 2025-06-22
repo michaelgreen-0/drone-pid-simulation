@@ -65,7 +65,7 @@ Your web browser should open with the dashboard automatically.
 
 Analysis is given for any number of dimensions. 2D, 3D, 4D ... etc. The lowest level is 2 dimensions.
 
-Flight paths are given for all dimensions in 3D space. However, from 4D onrwards, we only plot the first 3 dimensions.
+Flight paths are given for all dimensions in 3D space. However, from 4D onwards, we only plot the first 3 dimensions.
 
 This is based on what you feed into the src/env.py file.
 
