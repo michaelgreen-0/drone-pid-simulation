@@ -1,91 +1,72 @@
+import matplotlib
+
+matplotlib.use("Agg")  # Use a non-interactive backend suitable for scripts
 import matplotlib.pyplot as plt
 import numpy as np
+from mpl_toolkits.mplot3d import Axes3D  # For 3D plots
 
 
 def plot_drone_path(positions, desired_pos, output_filename="drone_path.png"):
     """
-    Plots path if analysis dimensions is 2D or 3D
+    Plots the drone's path in a 3D space.
+    For 2D simulations, the path is plotted on the z=0 plane.
     """
     num_dimensions = positions.shape[1]
 
-    # Don't plot 1D
+    # Don't plot for 1D simulations
     if num_dimensions == 1:
         return
 
-    fig = plt.figure(figsize=(8, 8))
-
+    # Prepare data for 3D plotting
     if num_dimensions == 2:
-        ax = fig.add_subplot(111)
-        x_min, x_max = np.min(positions[:, 0]), np.max(positions[:, 0])
-        y_min, y_max = np.min(positions[:, 1]), np.max(positions[:, 1])
-        x_range = x_max - x_min
-        y_range = y_max - y_min
-        ax.set_xlim(x_min - x_range * 0.1, x_max + x_range * 0.1)
-        ax.set_ylim(y_min - y_range * 0.1, y_max + y_range * 0.1)
+        # Add a Z-axis of zeros to the 2D data
+        z_zeros = np.zeros((positions.shape[0], 1))
+        positions_3d = np.hstack((positions, z_zeros))
+        desired_pos_3d = np.append(desired_pos, 0)
+    else:
+        # Use the first 3 dimensions for plotting if more are available
+        positions_3d = positions[:, :3]
+        desired_pos_3d = desired_pos[:3]
 
-        ax.plot(
-            positions[:, 0],
-            positions[:, 1],
-            label="Drone Path",
-            color="blue",
-            linewidth=2,
-        )
-        ax.scatter(
-            desired_pos[0], desired_pos[1], c="red", marker="x", s=100, label="Desired"
-        )
+    fig = plt.figure(figsize=(8, 8))
+    ax = fig.add_subplot(111, projection="3d")
 
-        # Start position
-        ax.scatter(
-            positions[0, 0],
-            positions[0, 1],
-            c="green",
-            marker="o",
-            s=100,
-            label="Start",
-        )
+    # Plot path
+    ax.plot(
+        positions_3d[:, 0],
+        positions_3d[:, 1],
+        positions_3d[:, 2],
+        label="Drone Path",
+        color="blue",
+        linewidth=2,
+    )
 
-        ax.set_xlabel("X Position (m)"), ax.set_ylabel("Y Position (m)")
-        ax.set_title("Drone Path"), ax.legend(), ax.grid(True), ax.axis("equal")
+    # Point - Desired position (red)
+    ax.scatter(
+        desired_pos_3d[0],
+        desired_pos_3d[1],
+        desired_pos_3d[2],
+        c="red",
+        marker="x",
+        s=100,
+        label="Desired",
+    )
 
-    elif num_dimensions >= 3:
-        ax = fig.add_subplot(111, projection="3d")
+    # Point - Start position (green)
+    ax.scatter(
+        positions_3d[0, 0],
+        positions_3d[0, 1],
+        positions_3d[0, 2],
+        c="green",
+        marker="o",
+        s=100,
+        label="Start",
+    )
 
-        # Plot path
-        ax.plot(
-            positions[:, 0],
-            positions[:, 1],
-            positions[:, 2],
-            label="Drone Path",
-            color="blue",
-            linewidth=2,
-        )
-
-        # Point - Desired position (red)
-        ax.scatter(
-            desired_pos[0],
-            desired_pos[1],
-            desired_pos[2],
-            c="red",
-            marker="x",
-            s=100,
-            label="Desired",
-        )
-
-        # Point - Start position (green)
-        ax.scatter(
-            positions[0, 0],
-            positions[0, 1],
-            positions[0, 2],
-            c="green",
-            marker="o",
-            s=100,
-            label="Start",
-        )
-
-        ax.set_xlabel("X Position (m)")
-        ax.set_ylabel("Y Position (m)")
-        ax.set_zlabel("Z Position (m)")
-        ax.set_title("Drone Path"), ax.legend()
+    ax.set_xlabel("X Position (m)")
+    ax.set_ylabel("Y Position (m)")
+    ax.set_zlabel("Z Position (m)")
+    ax.set_title("Drone Path"), ax.legend()
 
     # Save plot as png
     plt.savefig(output_filename)

@@ -8,6 +8,7 @@ numpy = "*"
 matplotlib = "*"
 pyqt6 = "*"
 streamlit = "*"
+python-json-logger = "*"
 
 [dev-packages]
 
