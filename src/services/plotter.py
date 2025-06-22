@@ -23,9 +23,6 @@ class Plotter:
         self.number_dimensions = self.drone_path.shape[1]
 
     def plot_drone_path(self, output_filename: str = None):
-        if self.number_dimensions not in [2, 3]:
-            return
-
         # Prepare data for 3D plotting
         if self.number_dimensions == 2:
             # Add a Z-axis of zeros to the 2D data

@@ -1,11 +1,8 @@
 # Drone PID Simulator
-TBA
-
-## Description
-TBA
+Simulate the movement of a drone that is controlled by PID controllers to a desired position.
 
 ## How it Works
-TBA
+With a given starting and desired position
 
 ## Getting Started 
 TBA
