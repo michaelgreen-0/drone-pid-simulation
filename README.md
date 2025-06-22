@@ -57,7 +57,7 @@ The below example variables are for a 3D simulation. But this can be any number 
 
 Launch the Streamlit application by running:
 ```bash
-streamlit run dashboard.py
+streamlit run src/dashboard.py
 ```
 Your web browser should open with the dashboard automatically.
 
