@@ -1,4 +1,5 @@
 import streamlit as st
+import os
 import numpy as np
 from src.models import Drone, PID
 from src.utils.plot import plot_simulation_data
@@ -11,6 +12,7 @@ from src.env import (
     KP,
     KI,
     KD,
+    EXTERNAL_FORCE_VECTOR,  # New: Import external force
 )
 
 
@@ -20,9 +22,13 @@ def run_simulation(kp, ki, kd):
 
     initial_pos = np.array(INITIAL_POSITION)
     desired_pos = np.array(DESIRED_POSITION)
+    external_force = np.array(EXTERNAL_FORCE_VECTOR)
 
+    # Validate inputs
     if initial_pos.shape != desired_pos.shape:
         raise ValueError("Initial and desired positions must have the same shape.")
+    if external_force.shape != initial_pos.shape:
+        raise ValueError("External force vector must match simulation dimensions.")
 
     drone = Drone(mass=DRONE_MASS, initial_position=initial_pos)
 
@@ -40,7 +46,7 @@ def run_simulation(kp, ki, kd):
 
     # Run simulation
     for _ in time_points:
-        force_vector = np.zeros(num_dimensions)
+        pid_force_vector = np.zeros(num_dimensions)
         p_vec, i_vec, d_vec = (
             np.zeros(num_dimensions),
             np.zeros(num_dimensions),
@@ -48,17 +54,18 @@ def run_simulation(kp, ki, kd):
         )
 
         for i in range(num_dimensions):
-            force_vector[i] = pid_controllers[i].compute_force(
+            pid_force_vector[i] = pid_controllers[i].compute_force(
                 drone.position[i], TIME_STEP
             )
             p_vec[i] = pid_controllers[i].pid_P
             i_vec[i] = pid_controllers[i].pid_I
             d_vec[i] = pid_controllers[i].pid_D
 
-        drone.apply_force(force_vector, TIME_STEP)
+        total_force_vector = pid_force_vector + external_force
+        drone.apply_force(total_force_vector, TIME_STEP)
 
         drone_path.append(drone.position.copy())
-        forces.append(force_vector)
+        forces.append(total_force_vector)
         p_components.append(p_vec)
         i_components.append(i_vec)
         d_components.append(d_vec)
@@ -75,20 +82,30 @@ def run_simulation(kp, ki, kd):
     return fig
 
 
-# Setup streamlit app
 st.set_page_config(layout="wide")
 st.title("Drone PID Controller Simulation")
 st.write(
     "Use the sliders in the sidebar to tune the PID controller's gains (Kp, Ki, Kd) "
-    "and observe the effect on the drone's stability in real-time."
+    "and observe the effect on the drone's stability and path."
 )
 
 # PID constants
 st.sidebar.header("PID Constants")
-kp = st.sidebar.slider("Kp (Proportional Gain)", 0.0, 2.0, KP, 0.05)
-ki = st.sidebar.slider("Ki (Integral Gain)", 0.0, 1.0, KI, 0.01)
-kd = st.sidebar.slider("Kd (Derivative Gain)", 0.0, 2.0, KD, 0.05)
+kp = st.sidebar.slider("Kp (Proportional)", 0.0, KP * 2, KP, 0.05)
+ki = st.sidebar.slider("Ki (Integral)", 0.0, KI * 2, KI, 0.01)
+kd = st.sidebar.slider("Kd (Derivative)", 0.0, KD * 2, KD, 0.05)
 
-# Run simulation and display the plot
-simulation_fig = run_simulation(kp, ki, kd)
-st.pyplot(simulation_fig)
+col1, col2 = st.columns(2)
+
+with col1:
+    st.header("Time Series Data")
+    simulation_fig = run_simulation(kp, ki, kd)
+    st.pyplot(simulation_fig)
+
+with col2:
+    st.header("Drone Path (2D/3D)")
+    path_image_filename = "drone_path.png"
+    if os.path.exists(path_image_filename):
+        st.image(path_image_filename)
+    else:
+        st.info("Path plot is available for 2D and 3D simulations.")

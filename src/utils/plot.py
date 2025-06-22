@@ -2,6 +2,96 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 
+def plot_drone_path(positions, desired_pos, output_filename="drone_path.png"):
+    """
+    Plots path if analysis dimensions is 2D or 3D
+    """
+    num_dimensions = positions.shape[1]
+
+    # Don't plot 1D
+    if num_dimensions == 1:
+        return
+
+    fig = plt.figure(figsize=(8, 8))
+
+    if num_dimensions == 2:
+        ax = fig.add_subplot(111)
+        x_min, x_max = np.min(positions[:, 0]), np.max(positions[:, 0])
+        y_min, y_max = np.min(positions[:, 1]), np.max(positions[:, 1])
+        x_range = x_max - x_min
+        y_range = y_max - y_min
+        ax.set_xlim(x_min - x_range * 0.1, x_max + x_range * 0.1)
+        ax.set_ylim(y_min - y_range * 0.1, y_max + y_range * 0.1)
+
+        ax.plot(
+            positions[:, 0],
+            positions[:, 1],
+            label="Drone Path",
+            color="blue",
+            linewidth=2,
+        )
+        ax.scatter(
+            desired_pos[0], desired_pos[1], c="red", marker="x", s=100, label="Desired"
+        )
+
+        # Start position
+        ax.scatter(
+            positions[0, 0],
+            positions[0, 1],
+            c="green",
+            marker="o",
+            s=100,
+            label="Start",
+        )
+
+        ax.set_xlabel("X Position (m)"), ax.set_ylabel("Y Position (m)")
+        ax.set_title("Drone Path"), ax.legend(), ax.grid(True), ax.axis("equal")
+
+    elif num_dimensions >= 3:
+        ax = fig.add_subplot(111, projection="3d")
+
+        # Plot path
+        ax.plot(
+            positions[:, 0],
+            positions[:, 1],
+            positions[:, 2],
+            label="Drone Path",
+            color="blue",
+            linewidth=2,
+        )
+
+        # Point - Desired position (red)
+        ax.scatter(
+            desired_pos[0],
+            desired_pos[1],
+            desired_pos[2],
+            c="red",
+            marker="x",
+            s=100,
+            label="Desired",
+        )
+
+        # Point - Start position (green)
+        ax.scatter(
+            positions[0, 0],
+            positions[0, 1],
+            positions[0, 2],
+            c="green",
+            marker="o",
+            s=100,
+            label="Start",
+        )
+
+        ax.set_xlabel("X Position (m)")
+        ax.set_ylabel("Y Position (m)")
+        ax.set_zlabel("Z Position (m)")
+        ax.set_title("Drone Path"), ax.legend()
+
+    # Save plot as png
+    plt.savefig(output_filename)
+    plt.close(fig)
+
+
 def plot_simulation_data(
     time_points, positions, forces, p_comps, i_comps, d_comps, desired_pos
 ):
@@ -13,6 +103,9 @@ def plot_simulation_data(
     desired_pos = np.array(desired_pos)
 
     num_dimensions = positions.shape[1] if positions.ndim > 1 else 1
+
+    # Generate and save the drone path animation to a file
+    plot_drone_path(positions, desired_pos)
 
     # Plot setup
     # Create a plot for each dimension
